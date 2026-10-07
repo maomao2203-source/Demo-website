@@ -19,24 +19,24 @@
         .hero-banner { display: none; width: 100%; height: 500px; position: relative; margin-bottom: 3rem; overflow: hidden; }
         .hero-banner.active { display: block; }
         .hero-banner video { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* Hiệu ứng hover cho banner để biết là có thể click */
         .hero-banner:hover { opacity: 0.95; transition: opacity 0.3s; }
 
-        /* Nút công tắc RMN */
         .toggle-checkbox:checked { right: 0; border-color: #1a1a1a; }
         .toggle-checkbox:checked + .toggle-label { background-color: #1a1a1a; }
         .toggle-checkbox:checked + .toggle-label:after { transform: translateX(100%); border-color: white; }
         
-        /* Sidebar Giỏ hàng */
         #cart-sidebar { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
         #cart-sidebar.open { transform: translateX(0); }
         
-        /* Modal Chi Tiết */
         .modal-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.open { opacity: 1; pointer-events: auto; }
         .modal-content { transform: scale(0.95); transition: transform 0.3s ease; }
         .modal-overlay.open .modal-content { transform: scale(1); }
+
+        /* Nút chọn biến thể sản phẩm */
+        .variant-btn { border: 1px solid #e5e0d8; background: white; color: #737373; transition: all 0.2s; }
+        .variant-btn:hover { border-color: #1a1a1a; color: #1a1a1a; }
+        .variant-btn.active { background: #1a1a1a; color: white; border-color: #1a1a1a; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body class="antialiased min-h-screen pb-20">
@@ -57,7 +57,6 @@
                 </div>
                 <span class="text-xs tracking-wider uppercase text-gray-900 font-bold">Chế độ RMN</span>
             </div>
-            <!-- Nút Giỏ Hàng -->
             <button onclick="toggleCart()" class="relative cursor-pointer text-xl">
                 🛒
                 <span id="cart-badge" class="absolute -top-2 -right-2 bg-black text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
@@ -65,7 +64,7 @@
         </div>
     </header>
 
-    <!-- Banner Video: Son Dior (Thêm thuộc tính onclick và cursor-pointer) -->
+    <!-- Banner Quảng Cáo -->
     <div id="video-banner-son" class="hero-banner cursor-pointer" onclick="openSponsoredProduct('son')">
         <video autoplay muted loop playsinline class="w-full h-full object-cover pointer-events-none">
             <source src="video-dior.mp4" type="video/mp4">
@@ -77,7 +76,6 @@
         </div>
     </div>
 
-    <!-- Banner Video: Áo Adidas (Thêm thuộc tính onclick và cursor-pointer) -->
     <div id="video-banner-ao" class="hero-banner cursor-pointer" onclick="openSponsoredProduct('ao')">
         <video autoplay muted loop playsinline class="w-full h-full object-cover pointer-events-none">
             <source src="video-adidas.mp4" type="video/mp4">
@@ -107,7 +105,7 @@
         <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"></div>
     </main>
 
-    <!-- CHI TIẾT SẢN PHẨM (MODAL) -->
+    <!-- CHI TIẾT SẢN PHẨM (MODAL) CÓ NÚT PHÂN LOẠI -->
     <div id="product-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
         <div class="modal-content bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row relative">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black z-10">&times;</button>
@@ -117,10 +115,14 @@
             <div class="w-full md:w-1/2 p-10 flex flex-col justify-center">
                 <p id="modal-brand" class="text-xs tracking-widest text-gray-500 uppercase mb-2"></p>
                 <h2 id="modal-name" class="text-3xl serif mb-4 text-gray-900 leading-tight"></h2>
-                <p id="modal-price" class="text-xl mb-6 font-medium"></p>
+                <p id="modal-price" class="text-xl mb-4 font-medium"></p>
+                
                 <div class="mb-8 h-px bg-gray-200 w-full"></div>
-                <p class="text-sm text-gray-600 mb-8 leading-relaxed">Một kiệt tác thiết kế mang tính biểu tượng, kết hợp sự thanh lịch vượt thời gian với phong cách hiện đại. Sản phẩm được hoàn thiện tỉ mỉ để mang đến trải nghiệm tuyệt vời nhất cho bạn.</p>
-                <button id="modal-add-btn" class="w-full bg-black text-white uppercase tracking-widest text-sm py-4 hover:bg-gray-800 transition">Thêm vào giỏ hàng</button>
+                
+                <!-- Khu vực chứa các nút chọn phân loại -->
+                <div id="modal-variants" class="mb-8"></div>
+                
+                <button id="modal-add-btn" class="w-full bg-black text-white uppercase tracking-widest text-sm py-4 hover:bg-gray-800 transition shadow-md">Thêm vào giỏ hàng</button>
             </div>
         </div>
     </div>
@@ -156,25 +158,13 @@
         const products = [];
         let cart = [];
         let orders = [];
+        let currentVariant = '';
         
-        const sonFiles = [
-            'Chanel_Premier_velvet_IS334.jpg', 
-            'Dior_velvetSatin_collection_IS334.jpg', 
-            'LSY_Velvet_Collection_IS334.jpg', 
-            'MAC_MACXIMAL_velvet_teddy_IS334.jpg', 
-            'Romand_velvet_collection.jpg', 
-            'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg', 
-            'TOMFORD_velvet_collection_IS334.jpg'
-        ];
-        
-        const aoFiles = [
-            'Adidas_tee_collection_IS334.jpg', 
-            'H&M_tee_collection_IS334.jpg', 
-            'Levi\'s_tee_collection_IS334.jpg', 
-            'Puma_tee_collection_IS334.jpg', 
-            'Uniqlo_tee_collection_IS334.jpg', 
-            'Zara_tee_collection_IS334.jpg'
-        ];
+        const sonFiles = ['Chanel_Premier_velvet_IS334.jpg', 'Dior_velvetSatin_collection_IS334.jpg', 'LSY_Velvet_Collection_IS334.jpg', 'MAC_MACXIMAL_velvet_teddy_IS334.jpg', 'Romand_velvet_collection.jpg', 'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg', 'TOMFORD_velvet_collection_IS334.jpg'];
+        const aoFiles = ['Adidas_tee_collection_IS334.jpg', 'H&M_tee_collection_IS334.jpg', 'Levi\'s_tee_collection_IS334.jpg', 'Puma_tee_collection_IS334.jpg', 'Uniqlo_tee_collection_IS334.jpg', 'Zara_tee_collection_IS334.jpg'];
+
+        const colors = ['Đỏ lạnh', 'Hồng san hô', 'Cam đất', 'Đỏ rượu'];
+        const sizes = ['S', 'M', 'L', 'XL'];
 
         for(let i=0; i<30; i++) {
             let file = sonFiles[i % sonFiles.length];
@@ -185,9 +175,8 @@
             products.push({
                 id: 'son' + i, type: 'son', brand: brand,
                 name: `Bộ sưu tập son ${brand} ${i+1}`,
-                priceNum: priceNum,
-                price: priceNum.toLocaleString('vi-VN') + ' đ',
-                image: file
+                priceNum: priceNum, price: priceNum.toLocaleString('vi-VN') + ' đ',
+                image: file, variants: colors, variantLabel: 'Màu sắc'
             });
         }
 
@@ -199,9 +188,8 @@
             products.push({
                 id: 'ao' + i, type: 'ao', brand: brand,
                 name: `Bộ sưu tập áo thun ${brand} ${i+1}`,
-                priceNum: priceNum,
-                price: priceNum.toLocaleString('vi-VN') + ' đ',
-                image: file
+                priceNum: priceNum, price: priceNum.toLocaleString('vi-VN') + ' đ',
+                image: file, variants: sizes, variantLabel: 'Kích cỡ'
             });
         }
 
@@ -223,14 +211,12 @@
 
         function renderProducts(list, isRMN = false, queryType = '') {
             grid.innerHTML = '';
-            
             list.forEach((p, index) => {
                 let isSponsored = false;
                 if(isRMN && index < 6) {
                     if(queryType === 'son' && p.image === 'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg') isSponsored = true;
                     if(queryType === 'ao' && p.brand === 'Adidas') isSponsored = true;
                 }
-
                 const html = `
                     <div class="product-card relative group" onclick="openProductModal('${p.id}')">
                         ${isSponsored ? '<div class="sponsored-badge z-10">Tài trợ</div>' : ''}
@@ -242,9 +228,7 @@
                                 <p class="text-[0.65rem] tracking-widest text-gray-500 uppercase mb-1">${p.brand}</p>
                                 <h4 class="text-sm serif mb-2 text-gray-900 leading-relaxed">${p.name}</h4>
                             </div>
-                            <div class="mt-4">
-                                <span class="text-sm">${p.price}</span>
-                            </div>
+                            <div class="mt-4"><span class="text-sm">${p.price}</span></div>
                         </div>
                     </div>
                 `;
@@ -275,9 +259,7 @@
             bannerAo.classList.remove('active');
 
             if(rmnActive && queryType !== '') {
-                let sponsored = [];
-                let normal = [];
-                
+                let sponsored = []; let normal = [];
                 if(queryType === 'son') {
                     bannerSon.classList.add('active');
                     sponsored = filtered.filter(p => p.image === 'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg').slice(0, 6);
@@ -285,7 +267,6 @@
                     bannerAo.classList.add('active');
                     sponsored = filtered.filter(p => p.brand === 'Adidas').slice(0, 6);
                 }
-                
                 normal = filtered.filter(p => !sponsored.includes(p));
                 renderProducts([...sponsored, ...shuffleArray(normal)], true, queryType);
             } else {
@@ -293,49 +274,57 @@
             }
         }
 
-        function quickSearch(keyword) {
-            searchInput.value = keyword;
-            performSearch();
+        function quickSearch(keyword) { searchInput.value = keyword; performSearch(); }
+        function openSponsoredProduct(type) {
+            let p = (type === 'son') ? products.find(p => p.image === 'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg') : products.find(p => p.brand === 'Adidas');
+            if (p) openProductModal(p.id);
         }
 
-        // --- HÀM MỞ SẢN PHẨM TỪ BANNER QUẢNG CÁO ---
-        function openSponsoredProduct(type) {
-            let targetProduct = null;
-            if (type === 'son') {
-                targetProduct = products.find(p => p.image === 'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg');
-            } else if (type === 'ao') {
-                targetProduct = products.find(p => p.brand === 'Adidas');
-            }
-            
-            if (targetProduct) {
-                openProductModal(targetProduct.id);
-            }
+        // CHỌN PHÂN LOẠI
+        function setVariant(btn, variantVal) {
+            const btns = document.querySelectorAll('.variant-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentVariant = variantVal;
+            document.getElementById('current-variant-text').innerText = variantVal;
         }
 
         const productModal = document.getElementById('product-modal');
         function openProductModal(id) {
             const product = products.find(p => p.id === id);
             if(product) {
-                const imgElement = document.getElementById('modal-img');
-                imgElement.style.display = 'block';
-                imgElement.src = product.image;
-                
+                document.getElementById('modal-img').src = product.image;
                 document.getElementById('modal-brand').innerText = product.brand;
                 document.getElementById('modal-name').innerText = product.name;
                 document.getElementById('modal-price').innerText = product.price;
                 
+                // Mặc định chọn cái đầu tiên
+                currentVariant = product.variants[0]; 
+                
+                // Render Nút bấm phân loại
+                let vHtml = `
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-xs uppercase tracking-widest text-stone-500 font-medium">${product.variantLabel}</label>
+                        <span id="current-variant-text" class="text-xs text-stone-900 font-medium">${currentVariant}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                `;
+                product.variants.forEach(v => {
+                    let activeClass = (v === currentVariant) ? 'active' : '';
+                    vHtml += `<button class="variant-btn px-5 py-2.5 text-sm font-light rounded-sm ${activeClass}" onclick="setVariant(this, '${v}')">${v}</button>`;
+                });
+                vHtml += '</div>';
+                document.getElementById('modal-variants').innerHTML = vHtml;
+                
                 document.getElementById('modal-add-btn').onclick = function() {
-                    addToCart(product.id);
+                    addToCart(product.id, currentVariant);
                     closeProductModal();
                     toggleCart(true); 
                 };
-                
                 productModal.classList.add('open');
             }
         }
-        function closeProductModal() {
-            productModal.classList.remove('open');
-        }
+        function closeProductModal() { productModal.classList.remove('open'); }
 
         const cartSidebar = document.getElementById('cart-sidebar');
         function toggleCart(forceOpen = false) {
@@ -344,37 +333,35 @@
             renderCart();
         }
 
-        function addToCart(id) {
+        function addToCart(id, variant) {
             const product = products.find(p => p.id === id);
             if(product) {
-                const existing = cart.find(item => item.id === id);
+                // Phân biệt sản phẩm bằng id + variant
+                let cartId = id + '-' + variant;
+                const existing = cart.find(item => item.cartId === cartId);
                 if(existing) existing.quantity += 1;
-                else cart.push({ ...product, quantity: 1 });
+                else cart.push({ ...product, cartId: cartId, variant: variant, quantity: 1 });
                 updateCartBadge();
             }
         }
 
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            updateCartBadge();
-            renderCart();
+        function removeFromCart(cartId) {
+            cart = cart.filter(item => item.cartId !== cartId);
+            updateCartBadge(); renderCart();
         }
 
         function updateCartBadge() {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-badge').innerText = totalItems;
+            document.getElementById('cart-badge').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
 
         function renderCart() {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = '';
-            
             if(cart.length === 0) {
                 cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 mt-10 text-sm">Giỏ hàng của bạn đang trống.</p>';
                 document.getElementById('cart-total').innerText = '0 đ';
                 return;
             }
-
             let totalPrice = 0;
             cart.forEach(item => {
                 totalPrice += item.priceNum * item.quantity;
@@ -383,9 +370,10 @@
                         <img src="${item.image}" class="w-16 h-16 object-cover bg-[#eae8e3]" style="display:block;">
                         <div class="flex-1">
                             <h4 class="text-xs serif mb-1 font-bold">${item.name}</h4>
+                            <p class="text-[0.65rem] text-stone-500 mb-1 border border-stone-200 inline-block px-1 mb-1">${item.variantLabel}: ${item.variant}</p>
                             <p class="text-xs text-gray-500 mb-1">${item.price} x ${item.quantity}</p>
                         </div>
-                        <button onclick="removeFromCart('${item.id}')" class="text-gray-400 hover:text-red-500 text-xl">&times;</button>
+                        <button onclick="removeFromCart('${item.cartId}')" class="text-gray-400 hover:text-red-500 text-xl">&times;</button>
                     </div>
                 `;
                 cartItemsContainer.insertAdjacentHTML('beforeend', html);
@@ -394,48 +382,30 @@
         }
 
         const ordersModal = document.getElementById('orders-modal');
-        function openOrdersModal() {
-            toggleCart(false); 
-            renderOrders();
-            ordersModal.classList.add('open');
-        }
-        function closeOrdersModal() {
-            ordersModal.classList.remove('open');
-        }
+        function openOrdersModal() { toggleCart(false); renderOrders(); ordersModal.classList.add('open'); }
+        function closeOrdersModal() { ordersModal.classList.remove('open'); }
 
         function checkout() {
-            if(cart.length === 0) {
-                alert("Bạn chưa có sản phẩm nào để thanh toán!");
-                return;
-            }
+            if(cart.length === 0) { alert("Bạn chưa có sản phẩm nào để thanh toán!"); return; }
             const total = cart.reduce((sum, item) => sum + item.priceNum * item.quantity, 0);
             const orderId = 'ORD-' + Math.floor(Math.random() * 100000);
-            const date = new Date().toLocaleDateString('vi-VN');
-            
             orders.unshift({
-                id: orderId, date: date, total: total.toLocaleString('vi-VN') + ' đ',
+                id: orderId, date: new Date().toLocaleDateString('vi-VN'), total: total.toLocaleString('vi-VN') + ' đ',
                 status: 'Đang xử lý', items: [...cart]
             });
-
-            cart = [];
-            updateCartBadge();
-            toggleCart(false); 
-            alert(`Thanh toán thành công! Mã đơn: ${orderId}`);
-            openOrdersModal();
+            cart = []; updateCartBadge(); toggleCart(false); 
+            alert(`Thanh toán thành công! Mã đơn: ${orderId}`); openOrdersModal();
         }
 
         function renderOrders() {
             const list = document.getElementById('orders-list');
             list.innerHTML = '';
-            
             if(orders.length === 0) {
-                list.innerHTML = '<p class="text-center text-gray-500 text-sm py-10">Bạn chưa có đơn hàng nào.</p>';
-                return;
+                list.innerHTML = '<p class="text-center text-gray-500 text-sm py-10">Bạn chưa có đơn hàng nào.</p>'; return;
             }
-
             orders.forEach(o => {
-                let itemsHtml = o.items.map(i => `<span class="text-xs bg-gray-200 px-2 py-1 mr-1 mb-1 inline-block">${i.name} (x${i.quantity})</span>`).join('');
-                const html = `
+                let itemsHtml = o.items.map(i => `<span class="text-[10px] bg-gray-200 px-2 py-1 mr-1 mb-1 inline-block">${i.name} - ${i.variant} (x${i.quantity})</span>`).join('');
+                list.insertAdjacentHTML('beforeend', `
                     <div class="bg-white p-6 border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between gap-4">
                         <div>
                             <div class="flex items-center gap-3 mb-2">
@@ -450,14 +420,12 @@
                             <p class="text-xl serif">${o.total}</p>
                         </div>
                     </div>
-                `;
-                list.insertAdjacentHTML('beforeend', html);
+                `);
             });
         }
 
         searchInput.addEventListener('input', performSearch);
         toggleRMN.addEventListener('change', performSearch);
-
         renderProducts(shuffleArray(products), false);
     </script>
 </body>
