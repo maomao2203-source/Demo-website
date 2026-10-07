@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHAHA - Minimalist Retail Media</title>
+    <title>AHAHA - Nền tảng Quảng cáo Bán lẻ Tối giản</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -41,18 +41,18 @@
     <header class="w-full border-b border-gray-300 py-6 px-10 sticky top-0 bg-[#F5F4F0] z-40 flex justify-between items-center">
         <div class="text-4xl serif tracking-widest cursor-pointer" onclick="quickSearch('')">AHAHA</div>
         <nav class="hidden md:flex space-x-10 text-xs tracking-widest uppercase text-gray-500">
-            <a href="#" class="hover:text-black">Shop</a>
-            <a href="#" class="hover:text-black">Materials</a>
+            <a href="#" class="hover:text-black">Cửa hàng</a>
+            <a href="#" class="hover:text-black">Chất liệu</a>
             <a href="#" class="hover:text-black cursor-pointer" onclick="openOrdersModal()">Đơn hàng</a>
         </nav>
         <div class="flex items-center space-x-6">
             <div class="flex items-center space-x-3">
-                <span class="text-xs tracking-wider uppercase text-gray-400 font-medium">Standard</span>
+                <span class="text-xs tracking-wider uppercase text-gray-400 font-medium">Cơ bản</span>
                 <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
                     <input type="checkbox" name="toggle" id="rmn-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out"/>
                     <label for="rmn-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                 </div>
-                <span class="text-xs tracking-wider uppercase text-gray-900 font-bold">RMN Mode</span>
+                <span class="text-xs tracking-wider uppercase text-gray-900 font-bold">Chế độ RMN</span>
             </div>
             <!-- Nút Giỏ Hàng -->
             <button onclick="toggleCart()" class="relative cursor-pointer text-xl">
@@ -68,7 +68,7 @@
             <source src="video-dior.mp4" type="video/mp4">
         </video>
         <div class="absolute bottom-10 left-10 text-white p-6 z-10" style="background: rgba(0,0,0,0.4);">
-            <div class="text-xs tracking-widest uppercase mb-2 border border-white inline-block px-2 py-1">Sponsored Content</div>
+            <div class="text-xs tracking-widest uppercase mb-2 border border-white inline-block px-2 py-1">Nội dung tài trợ</div>
             <h2 class="text-5xl serif mb-2">Dior Addict Lip Glow</h2>
         </div>
     </div>
@@ -79,14 +79,14 @@
             <source src="video-adidas.mp4" type="video/mp4">
         </video>
         <div class="absolute bottom-10 left-10 text-white p-6 z-10" style="background: rgba(0,0,0,0.4);">
-            <div class="text-xs tracking-widest uppercase mb-2 border border-white inline-block px-2 py-1">Sponsored Content</div>
-            <h2 class="text-5xl serif mb-2">Adidas Collection</h2>
+            <div class="text-xs tracking-widest uppercase mb-2 border border-white inline-block px-2 py-1">Nội dung tài trợ</div>
+            <h2 class="text-5xl serif mb-2">Bộ Sưu Tập Adidas</h2>
         </div>
     </div>
 
     <main class="max-w-7xl mx-auto px-6 mt-10">
         <div class="mb-10 text-center">
-            <input type="text" id="search-input" placeholder="Search for 'son' or 'áo thun'..." 
+            <input type="text" id="search-input" placeholder="Tìm kiếm 'son' hoặc 'áo thun'..." 
                 class="w-full max-w-2xl bg-transparent border-b border-gray-400 py-3 px-4 text-xl serif focus:outline-none focus:border-black transition-colors">
             <div class="mt-4 text-sm text-gray-500">
                 Gợi ý: <span class="cursor-pointer hover:text-black underline" onclick="quickSearch('son')">Son môi</span>, 
@@ -95,20 +95,19 @@
         </div>
 
         <div class="flex justify-between items-end mb-6">
-            <h3 class="text-xl serif italic" id="search-result-text">All Products</h3>
-            <span class="text-xs tracking-widest text-gray-500" id="item-count">60 ITEMS</span>
+            <h3 class="text-xl serif italic" id="search-result-text">Tất cả sản phẩm</h3>
+            <span class="text-xs tracking-widest text-gray-500" id="item-count">60 SẢN PHẨM</span>
         </div>
 
         <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"></div>
     </main>
 
-    <!-- CHI TIẾT SẢN PHẨM (MODAL) ĐÃ ĐƯỢC SỬA LỖI ẢNH -->
+    <!-- CHI TIẾT SẢN PHẨM (MODAL) -->
     <div id="product-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
         <div class="modal-content bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col md:flex-row relative">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black z-10">&times;</button>
             <div class="w-full md:w-1/2 bg-[#eae8e3] flex items-center justify-center p-8">
-                <!-- Đã loại bỏ lệnh onerror gây lỗi, ép style display block -->
-                <img id="modal-img" src="" alt="Product Image" class="max-h-[60vh] w-full object-contain mix-blend-multiply" style="display: block;">
+                <img id="modal-img" src="" alt="Hình ảnh sản phẩm" class="max-h-[60vh] w-full object-contain mix-blend-multiply" style="display: block;">
             </div>
             <div class="w-full md:w-1/2 p-10 flex flex-col justify-center">
                 <p id="modal-brand" class="text-xs tracking-widest text-gray-500 uppercase mb-2"></p>
@@ -180,7 +179,7 @@
             
             products.push({
                 id: 'son' + i, type: 'son', brand: brand,
-                name: `${brand} Lipstick Collection ${i+1}`,
+                name: `Bộ sưu tập son ${brand} ${i+1}`,
                 priceNum: priceNum,
                 price: priceNum.toLocaleString('vi-VN') + ' đ',
                 image: file
@@ -194,7 +193,7 @@
             
             products.push({
                 id: 'ao' + i, type: 'ao', brand: brand,
-                name: `${brand} T-Shirt Collection ${i+1}`,
+                name: `Bộ sưu tập áo thun ${brand} ${i+1}`,
                 priceNum: priceNum,
                 price: priceNum.toLocaleString('vi-VN') + ' đ',
                 image: file
@@ -229,7 +228,7 @@
 
                 const html = `
                     <div class="product-card relative group" onclick="openProductModal('${p.id}')">
-                        ${isSponsored ? '<div class="sponsored-badge z-10">Sponsored</div>' : ''}
+                        ${isSponsored ? '<div class="sponsored-badge z-10">Tài trợ</div>' : ''}
                         <div class="w-full aspect-square bg-[#eae8e3] mb-4 overflow-hidden flex items-center justify-center">
                             <img src="${p.image}" class="w-full h-full object-cover mix-blend-multiply transition duration-500 group-hover:scale-105" onerror="this.style.display='none'">
                         </div>
@@ -258,13 +257,13 @@
             if(query.includes('son')) {
                 filtered = products.filter(p => p.type === 'son');
                 queryType = 'son';
-                resultText.innerText = 'Search: "son"';
+                resultText.innerText = 'Tìm kiếm: "son"';
             } else if (query.includes('áo') || query.includes('ao')) {
                 filtered = products.filter(p => p.type === 'ao');
                 queryType = 'ao';
-                resultText.innerText = 'Search: "áo thun"';
+                resultText.innerText = 'Tìm kiếm: "áo thun"';
             } else {
-                resultText.innerText = 'All Products';
+                resultText.innerText = 'Tất cả sản phẩm';
             }
 
             bannerSon.classList.remove('active');
@@ -294,13 +293,12 @@
             performSearch();
         }
 
-        // --- HÀM MỞ CHI TIẾT SẢN PHẨM (ĐÃ SỬA LỖI ẢNH) ---
         const productModal = document.getElementById('product-modal');
         function openProductModal(id) {
             const product = products.find(p => p.id === id);
             if(product) {
                 const imgElement = document.getElementById('modal-img');
-                imgElement.style.display = 'block'; // Luôn ép ảnh hiển thị khi mở modal
+                imgElement.style.display = 'block';
                 imgElement.src = product.image;
                 
                 document.getElementById('modal-brand').innerText = product.brand;
@@ -320,7 +318,6 @@
             productModal.classList.remove('open');
         }
 
-        // --- GIỎ HÀNG ---
         const cartSidebar = document.getElementById('cart-sidebar');
         function toggleCart(forceOpen = false) {
             if(forceOpen === true) cartSidebar.classList.add('open');
@@ -377,7 +374,6 @@
             document.getElementById('cart-total').innerText = totalPrice.toLocaleString('vi-VN') + ' đ';
         }
 
-        // --- ĐƠN HÀNG ---
         const ordersModal = document.getElementById('orders-modal');
         function openOrdersModal() {
             toggleCart(false); 
