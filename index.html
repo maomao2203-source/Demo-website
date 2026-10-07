@@ -20,6 +20,9 @@
         .hero-banner.active { display: block; }
         .hero-banner video { width: 100%; height: 100%; object-fit: cover; }
         
+        /* Hiệu ứng hover cho banner để biết là có thể click */
+        .hero-banner:hover { opacity: 0.95; transition: opacity 0.3s; }
+
         /* Nút công tắc RMN */
         .toggle-checkbox:checked { right: 0; border-color: #1a1a1a; }
         .toggle-checkbox:checked + .toggle-label { background-color: #1a1a1a; }
@@ -62,25 +65,27 @@
         </div>
     </header>
 
-    <!-- Banner Video: Son Dior -->
-    <div id="video-banner-son" class="hero-banner">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+    <!-- Banner Video: Son Dior (Thêm thuộc tính onclick và cursor-pointer) -->
+    <div id="video-banner-son" class="hero-banner cursor-pointer" onclick="openSponsoredProduct('son')">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover pointer-events-none">
             <source src="video-dior.mp4" type="video/mp4">
         </video>
         <div class="absolute bottom-10 left-10 text-white p-6 z-10" style="background: rgba(0,0,0,0.4);">
             <div class="text-xs tracking-widest uppercase mb-2 border border-white inline-block px-2 py-1">Nội dung tài trợ</div>
             <h2 class="text-5xl serif mb-2">Dior Addict Lip Glow</h2>
+            <p class="text-sm underline mt-2">Bấm để mua ngay</p>
         </div>
     </div>
 
-    <!-- Banner Video: Áo Adidas -->
-    <div id="video-banner-ao" class="hero-banner">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+    <!-- Banner Video: Áo Adidas (Thêm thuộc tính onclick và cursor-pointer) -->
+    <div id="video-banner-ao" class="hero-banner cursor-pointer" onclick="openSponsoredProduct('ao')">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover pointer-events-none">
             <source src="video-adidas.mp4" type="video/mp4">
         </video>
         <div class="absolute bottom-10 left-10 text-white p-6 z-10" style="background: rgba(0,0,0,0.4);">
             <div class="text-xs tracking-widest uppercase mb-2 border border-white inline-block px-2 py-1">Nội dung tài trợ</div>
             <h2 class="text-5xl serif mb-2">Bộ Sưu Tập Adidas</h2>
+            <p class="text-sm underline mt-2">Bấm để mua ngay</p>
         </div>
     </div>
 
@@ -291,6 +296,20 @@
         function quickSearch(keyword) {
             searchInput.value = keyword;
             performSearch();
+        }
+
+        // --- HÀM MỞ SẢN PHẨM TỪ BANNER QUẢNG CÁO ---
+        function openSponsoredProduct(type) {
+            let targetProduct = null;
+            if (type === 'son') {
+                targetProduct = products.find(p => p.image === 'Son_duong_Dior_Addict_Lip_Glow_Oiljpg.jpg');
+            } else if (type === 'ao') {
+                targetProduct = products.find(p => p.brand === 'Adidas');
+            }
+            
+            if (targetProduct) {
+                openProductModal(targetProduct.id);
+            }
         }
 
         const productModal = document.getElementById('product-modal');
